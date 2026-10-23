@@ -10,13 +10,16 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import tarfile
+import tempfile
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_VERSION = "3.0.3"
 RAW_BASE = "https://raw.githubusercontent.com/Hundekraft/op1-workshop/main/source"
+REPO_GIT = "https://github.com/Hundekraft/op1-workshop.git"
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -36,6 +39,44 @@ def _download(url: str, dest: Path) -> None:
     with urllib.request.urlopen(req, timeout=120) as r, open(tmp, "wb") as f:
         shutil.copyfileobj(r, f)
     tmp.replace(dest)
+
+
+def _git_fetch(names: list[str], dest_dir: Path) -> None:
+    """Fallback when raw.githubusercontent.com is unreachable: a shallow, sparse clone of just these files."""
+    if not shutil.which("git"):
+        raise SdkError("git is not installed")
+    with tempfile.TemporaryDirectory(prefix="op1video-git-") as tmp:
+        repo = Path(tmp) / "repo"
+        steps = [["git", "clone", "-q", "--depth", "1", "--filter=blob:none", "--sparse", REPO_GIT, str(repo)],
+                 ["git", "-C", str(repo), "sparse-checkout", "set", "--no-cone", *[f"/source/{n}" for n in names]]]
+        for cmd in steps:
+            r = subprocess.run(cmd, capture_output=True, text=True)
+            if r.returncode:
+                raise SdkError(f"{' '.join(cmd[:3])} failed: {(r.stderr or r.stdout).strip()[:300]}")
+        for n in names:
+            src = repo / "source" / n
+            if not src.exists():
+                raise SdkError(f"{n} is not in the repository's source/ folder (check --sdk-version)")
+            shutil.copy(src, dest_dir / n)
+
+
+def _get(names: list[str], dest_dir: Path) -> None:
+    errors = []
+    try:
+        for n in names:
+            _download(f"{RAW_BASE}/{n}", dest_dir / n)
+        return
+    except OSError as e:                                  # URLError, HTTPError, timeouts, proxies
+        errors.append(f"download from raw.githubusercontent.com: {getattr(e, 'reason', e)}")
+    print("  direct download failed; trying git ...")
+    try:
+        _git_fetch(names, dest_dir)
+        return
+    except SdkError as e:
+        errors.append(f"git: {e}")
+    raise SdkError("could not get the source bundle:\n  " + "\n  ".join(errors) +
+                   f"\nDownload {names[-1]} from https://github.com/Hundekraft/op1-workshop/tree/main/source "
+                   "yourself and pass --sdk path/to/it (see docs/TROUBLESHOOTING.md).")
 
 
 def _sha256(path: Path) -> str:
@@ -72,9 +113,7 @@ def fetch(version: str = DEFAULT_VERSION, force: bool = False) -> Path:
     tar_path = cache_dir() / name
     sha_path = cache_dir() / (name + ".sha256")
     print(f"downloading {name} ...")
-    _download(f"{RAW_BASE}/{name}.sha256", sha_path)
-    if force or not tar_path.exists():
-        _download(f"{RAW_BASE}/{name}", tar_path)
+    _get([name + ".sha256", name] if (force or not tar_path.exists()) else [name + ".sha256"], cache_dir())
     expected = sha_path.read_text().split()[0].strip().lower()
     actual = _sha256(tar_path)
     if expected != actual:
