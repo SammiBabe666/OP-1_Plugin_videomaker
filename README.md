@@ -23,7 +23,7 @@ palme, pew, plate, reverb, sid, snowglobe, stutter, supersaw, taffy, tape, warbl
 You need Python 3.9+, a C compiler, ffmpeg and librsvg (step-by-step per OS in [docs/INSTALL.md](docs/INSTALL.md)).
 
 ```bash
-git clone <this repo> op1-plugin-video && cd op1-plugin-video
+git clone https://github.com/SammiBabe666/OP-1_Plugin_videomaker.git op1-plugin-video && cd op1-plugin-video
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
