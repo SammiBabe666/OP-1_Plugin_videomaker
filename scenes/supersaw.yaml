@@ -1,0 +1,14 @@
+# Supersaw: two detuned saws, a sub and drive. The chainsaw shakes with drive.
+plugin: supersaw
+title: SUPERSAW
+subtitle: Detuned saw stack.
+duration: 12
+labels: [Detune, Shape, Sub, Drive]
+envelope: {attack: 10, decay: 400, sustain: 85, release: 300}
+notes:
+  - {at: 0.2, every: 0.5, len: 0.42, notes: [A2+C3+E3, A2+C3+E3, F2+A2+C3, F2+A2+C3, C3+E3+G3, C3+E3+G3, G2+B2+D3, G2+B2+D3], until: 11.8}
+moves:
+  - {at: 0.5, to: 3.5, knob: blue, value: 90}
+  - {at: 3.5, to: 6.0, knob: white, value: 70}
+  - {at: 6.0, to: 9.0, knob: orange, value: 95}
+  - {at: 9.0, to: 11.5, knob: green, value: 60}

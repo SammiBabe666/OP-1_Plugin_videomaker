@@ -1,0 +1,15 @@
+# FM Bell: two-operator FM. Blue picks the ratio; the rings follow the modulation index.
+plugin: fmbell
+title: FM BELL
+subtitle: FM bells and e-pianos.
+duration: 12
+labels: [Ratio, Index, Decay, Feedback]
+envelope: {attack: 1, decay: 1800, sustain: 0, release: 1200}
+notes:
+  - {at: 0.2, every: 0.6, len: 0.55, notes: [C3+E3, G3, B3, D4, A2+C3, E3, G3, C4], until: 11.6}
+moves:
+  - {at: 0.5, to: 3.0, knob: green, value: 75}
+  - {at: 3.0, knob: blue, value: 40}
+  - {at: 5.0, knob: blue, value: 70}
+  - {at: 5.2, to: 8.0, knob: white, value: 85}
+  - {at: 8.0, to: 11.0, knob: orange, value: 60}

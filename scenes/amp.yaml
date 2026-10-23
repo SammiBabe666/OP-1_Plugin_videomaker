@@ -1,0 +1,15 @@
+# Amp: live input through compression, tone and drive. The input here is the built-in drum loop.
+# Add `tuner: true` to render the T2 tuner page instead, and `source: {file: guitar.wav}` for your own input.
+plugin: amp
+title: AMP
+subtitle: Your input is the instrument.
+duration: 12
+bpm: 96
+labels: [Volume, Comp, Tone, Drive]
+knobs: [50, 0, 50, 0]
+source: {type: drums, level: 80}
+moves:
+  - {at: 1.5, to: 4.0, knob: green, value: 80}
+  - {at: 4.5, to: 7.0, knob: orange, value: 75}
+  - {at: 7.5, to: 9.5, knob: white, value: 85, ease: sine}
+  - {at: 9.5, to: 11.5, knobs: [60, 40, 40, 30]}

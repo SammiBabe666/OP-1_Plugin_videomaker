@@ -1,0 +1,17 @@
+# Pew: Sunday, Gospel (rotor up to fast), Jazz (manual "Try this").
+plugin: pew
+title: PEW
+subtitle: Drawbar organ. Rotary speaker.
+duration: 14
+labels: [Low bars, Middle bars, High bars, Rotor]
+knobs: [100, 61, 12, 12]                     # sunday
+envelope: {attack: 5, decay: 100, sustain: 100, release: 120}
+notes:
+  - {at: 0.2, every: 2.0, len: 1.9, notes: [C2+E2+G2+C3, F2+A2+C3+F3], until: 4.2}
+  - {at: 4.5, every: 1.5, len: 1.4, notes: [Bb1+D2+F2+Bb2, Eb2+G2+Bb2+Eb3, F2+A2+C3+F3, Bb1+D2+F2+Bb2], until: 10.5}
+  - {at: 10.6, every: 0.4, len: 0.3, notes: [D2+F2+A2+C3, -, G2+B2+D3+F3, G2+B2+D3+F3, -, C2+E2+G2+B2, -, -], until: 13.8}
+moves:
+  - {at: 4.2, to: 4.5, knobs: [100, 100, 37, 12]}      # gospel...
+  - {at: 5.5, to: 7.0, knob: orange, value: 92}        # ...rotor speeding up: the horn and drum catch up
+  - {at: 8.8, to: 9.6, knob: orange, value: 20}
+  - {at: 10.2, to: 10.6, knobs: [79, 24, 0, 37]}       # jazz

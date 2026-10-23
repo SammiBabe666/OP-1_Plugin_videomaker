@@ -1,0 +1,16 @@
+# Granular: plays the slot's sample as grains. Without `sample:` the SDK's demo tones are used;
+# point `sample:` at any audio file (it is decoded to 44.1 kHz mono, up to 6 s).
+plugin: granular
+title: GRANULAR
+subtitle: Plays the slot's sample as grains.
+duration: 12
+labels: [Position, Grain size, Spray, Density]
+envelope: {attack: 200, decay: 500, sustain: 90, release: 900}
+notes:
+  - {at: 0.2, len: 5.6, chord: [C3, G3]}
+  - {at: 6.0, len: 5.6, chord: [Ab2, Eb3, C4]}
+moves:
+  - {at: 0.5, to: 5.5, knob: blue, value: 85}
+  - {at: 2.0, to: 5.0, knob: white, value: 60}
+  - {at: 6.0, to: 9.0, knob: orange, value: 90}
+  - {at: 8.0, to: 11.5, knob: green, value: 15}

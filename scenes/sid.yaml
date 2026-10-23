@@ -1,0 +1,19 @@
+# SID: an 8580-inspired chip synth. Blue steps through triangle, saw, pulse, noise, sync, ring.
+plugin: sid
+title: SID
+subtitle: An 8580-inspired chip synth.
+duration: 13
+labels: [Mode, Voices, Cutoff, Resonance]
+envelope: {attack: 2, decay: 250, sustain: 60, release: 200}
+notes:
+  - {at: 0.2, every: 0.125, len: 0.11, notes: "C3 Eb3 G3 C4 G3 Eb3  Ab2 C3 Eb3 Ab3 Eb3 C3  Bb2 D3 F3 Bb3 F3 D3  G2 B2 D3 G3 D3 B2", until: 12.6}
+moves:
+  - {at: 0.0, knob: blue, value: 5}                     # triangle
+  - {at: 2.0, knob: blue, value: 25}                    # saw
+  - {at: 4.0, knob: blue, value: 45}                    # pulse
+  - {at: 4.2, to: 6.0, knob: green, value: 15, ease: sine}
+  - {at: 6.0, knob: blue, value: 75}                    # sync
+  - {at: 8.0, knob: blue, value: 95}                    # ring
+  - {at: 8.2, to: 11.0, knob: white, value: 40}
+  - {at: 8.2, to: 11.0, knob: orange, value: 80}
+  - {at: 11.0, to: 12.5, knob: white, value: 97}

@@ -1,0 +1,16 @@
+# Snowglobe: shimmer reverb. Ice pad, then turn orange all the way up to freeze the tail and play over it.
+plugin: snowglobe
+title: SNOWGLOBE
+subtitle: Shimmer reverb with a frozen heart.
+duration: 15
+labels: [Snowfall, Shimmer, Globe size, Shake]
+knobs: [90, 70, 80, 70]                      # ice pad
+source: {type: pluck, level: 70}
+envelope: {attack: 2, decay: 400, sustain: 20, release: 300}
+notes:
+  - {at: 0.2, every: 0.4, len: 0.3, notes: "C3 G3 D4 E4 G3 D4 - -  A2 E3 B3 C4 E3 B3 - -", until: 6.2}
+  - {at: 6.4, len: 2.4, chord: [C3, G3, D4, E4]}
+  - {at: 10.0, every: 0.3, len: 0.25, notes: "E4 G4 B4 D5 B4 G4", until: 14.0}
+moves:
+  - {at: 7.0, to: 8.4, knob: orange, value: 100}     # frozen: the screen frosts over
+  - {at: 13.8, to: 14.8, knob: orange, value: 60}    # and let it go

@@ -1,0 +1,18 @@
+# Tilt the OP-1. tilt: [side, front] in degrees: side = right side up (+), front = front edge up (+).
+# Aether bends pitch with front and lowers the volume as the right side rises (orange sets how much).
+plugin: aether
+title: AETHER
+subtitle: tilt to play
+duration: 10
+fps: 60
+labels: [Pitch range, Timbre, Vibrato, Volume tilt]
+knobs: [60, 40, 30, 70]
+envelope: {attack: 120, decay: 300, sustain: 95, release: 700}
+notes:
+  - {at: 0.3, len: 9.2, note: D3}
+moves:
+  - {at: 1.0, to: 3.0, tilt: [0, 30], ease: sine}
+  - {at: 3.0, to: 5.0, tilt: [0, -30], ease: sine}
+  - {at: 5.0, to: 7.0, tilt: [35, 0], ease: sine}      # quieter
+  - {at: 7.0, to: 9.0, tilt: [0, 0]}
+  - {at: 6.0, shift: true, len: 1.0}                   # hold shift for a second

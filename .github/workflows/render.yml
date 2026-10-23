@@ -1,0 +1,41 @@
+# Renders every plugin and uploads the videos as a build artifact.
+# Run it from the Actions tab ("Run workflow"), or on pushes that touch the renderer or scenes.
+name: render
+
+on:
+  workflow_dispatch:
+    inputs:
+      layout:
+        description: "card, screen or square"
+        default: card
+  push:
+    paths: ["op1video/**", "sim/**", "scenes/**", ".github/workflows/render.yml"]
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: System packages
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg librsvg2-2 fonts-inter
+      - name: Python packages
+        run: pip install -r requirements.txt
+      - name: Cache the source bundle and builds
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: op1video-${{ hashFiles('sim/**', 'op1video/sdk.py', 'op1video/compat.py') }}
+          restore-keys: op1video-
+      - run: python op1video.py doctor || true
+      - run: python op1video.py fetch
+      - name: Tests
+        run: python -m unittest discover -s tests -v
+      - name: Render
+        run: python op1video.py render-all --layout "${{ github.event.inputs.layout || 'card' }}" --out-dir renders
+      - uses: actions/upload-artifact@v4
+        with:
+          name: op1-plugin-videos
+          path: renders/

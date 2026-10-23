@@ -1,0 +1,15 @@
+# Plate: a plate reverb (Maiko #250). Decay rings longer; the ripples follow the tail.
+plugin: plate
+title: PLATE
+subtitle: A plate reverb.
+duration: 12
+labels: [Decay, Tone, Pre, Mix]
+source: {type: pluck, level: 75}
+envelope: {attack: 1, decay: 200, sustain: 0, release: 150}
+notes:
+  - {at: 0.2, every: 0.75, len: 0.2, notes: [C3+E3+G3, -, A2+C3+E3, -, F2+A2+C3, G2+B2+D3], until: 11.0}
+moves:
+  - {at: 1.0, to: 4.0, knob: blue, value: 90}
+  - {at: 4.0, to: 6.5, knob: orange, value: 65}
+  - {at: 6.5, to: 9.0, knob: green, value: 15}        # dark
+  - {at: 9.0, to: 11.0, knob: white, value: 85}

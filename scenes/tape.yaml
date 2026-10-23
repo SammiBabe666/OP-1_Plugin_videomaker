@@ -1,0 +1,15 @@
+# Tape echo: the loop on screen is locked to the delay time; time glides like real tape speed.
+plugin: tape
+title: TAPE
+subtitle: Vintage tape echo.
+duration: 12
+labels: [Age, Feedback, Time, Wow & flutter]
+source: {type: pluck, level: 75}
+envelope: {attack: 1, decay: 220, sustain: 0, release: 150}
+notes:
+  - {at: 0.2, every: 1.0, len: 0.15, notes: [C3, Eb3, G3, Bb3], until: 8.0}
+moves:
+  - {at: 1.0, to: 3.0, knob: green, value: 75}
+  - {at: 3.0, to: 6.0, knob: white, value: 30, ease: sine}    # the pitch bends while time moves
+  - {at: 6.0, to: 8.0, knob: blue, value: 80}
+  - {at: 8.0, to: 11.5, knob: orange, value: 70}

@@ -1,0 +1,12 @@
+# A live-input engine. Amp processes its input continuously; tuner: true shows its T2 tuner page.
+plugin: amp
+title: AMP
+subtitle: T2 tuner
+duration: 8
+tuner: true
+labels: [Volume, Comp, Tone, Drive]
+source: {type: sine, level: 60}
+envelope: {attack: 20, decay: 100, sustain: 100, release: 300}
+notes:
+  - {at: 0.2, len: 3.6, note: A2}
+  - {at: 4.0, len: 3.8, note: E1}

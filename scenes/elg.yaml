@@ -1,0 +1,18 @@
+# Elg: moose call, northern light, hum (manual "Try this"). Slow attacks suit its drones.
+plugin: elg
+title: ELG
+subtitle: Slow-moving drones with a low growl.
+duration: 15
+labels: [Interval, Detune, Timbre, Movement]
+knobs: [2, 27, 43, 37]                       # moose call
+envelope: {attack: 900, decay: 800, sustain: 90, release: 1500}
+notes:
+  - {at: 0.2, len: 4.3, chord: [C1, G1]}                    # octave -1
+  - {at: 5.0, len: 5.0, chord: [F1, C2, Ab2]}
+  - {at: 10.5, len: 4.0, chord: [C1]}                       # hum, octave -1
+moves:
+  - {at: 1.0, to: 4.0, knob: white, value: 70}
+  - {at: 4.6, to: 5.0, knobs: [5, 37, 37, 92]}             # northern light
+  - {at: 5.5, to: 9.5, knob: blue, value: 60}               # interval steps: octave, octave + fifth
+  - {at: 10.0, to: 10.5, knobs: [0, 9, 31, 12]}            # hum
+  - {at: 11.0, to: 14.5, knob: green, value: 45}

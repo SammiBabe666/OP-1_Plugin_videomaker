@@ -1,0 +1,16 @@
+# Mixtur: four dividers play undertones of the key (after Oskar Sala's Mixtur-Trautonium).
+plugin: mixtur
+title: MIXTUR
+subtitle: Undertones below every key.
+duration: 12
+labels: [Divider A, Divider B, Divider C, Divider D]
+envelope: {attack: 120, decay: 500, sustain: 90, release: 900}
+notes:
+  - {at: 0.2, every: 2.0, len: 1.9, notes: [C4, Bb3, Ab3, G3, F3, G3], until: 11.8}
+moves:
+  - {at: 2.0, to: 3.5, knob: green, value: 20}
+  - {at: 4.0, to: 5.5, knob: white, value: 30}
+  - {at: 6.0, to: 7.5, knob: orange, value: 45}
+  - {at: 8.0, press: blue}                          # page 2: formant 1
+  - {at: 8.2, to: 11.0, knob: blue2, value: 80, ease: sine}
+  - {at: 11.2, press: blue}

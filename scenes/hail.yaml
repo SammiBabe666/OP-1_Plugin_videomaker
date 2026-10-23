@@ -1,0 +1,18 @@
+# HAIL: granular clouds after Mutable Instruments Beads. Pushes reach Pitch, Mix and Space.
+plugin: hail
+title: HAIL
+subtitle: Clouds of grains, after Mutable Instruments Beads.
+duration: 14
+labels: [Time, Size, Shape, Density]
+source: {type: pluck, level: 75}
+envelope: {attack: 2, decay: 250, sustain: 30, release: 200}
+notes:
+  - {at: 0.1, every: 0.25, len: 0.2, notes: "D3 F3 A3 C4 A3 F3 E3 G3", until: 13.5}
+moves:
+  - {at: 1.0, to: 3.5, knob: orange, value: 38}          # regular grains, a little left of the middle
+  - {at: 3.5, to: 5.5, knob: green, value: 60}
+  - {at: 6.0, press: [blue, green]}                       # Pitch and Mix
+  - {at: 6.2, to: 8.0, knob: blue2, value: 75}           # +12 semitones
+  - {at: 6.2, to: 8.0, knob: green2, value: 100}         # grains only
+  - {at: 9.0, to: 11.0, knob: orange, value: 85}         # random grains
+  - {at: 11.5, press: orange}                             # freeze

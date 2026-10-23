@@ -1,0 +1,35 @@
+# Every scene feature on one effect. HAIL: granular clouds (after Mutable Instruments Beads).
+plugin: hail
+title: HAIL
+subtitle: every scene feature
+duration: 14
+fps: 30
+bpm: 100
+labels: [Time, Size, Shape, Density]
+
+knobs: [30, 60, {raw: 16384}, 45]       # percent, or the plugin's own 0..32767 word
+page2: [50, 70, 25]                     # starting page-2 words: Pitch (50 = 0 st), Mix, Space
+envelope: {attack: 2, decay: 250, sustain: 30, release: 200}
+master: 60                              # output gain before normalisation
+normalize: -1                           # peak normalisation target in dBFS (false = off)
+
+source: {type: pluck, level: 75}        # the built-in synth the notes play into the effect
+
+notes:
+  # a sequence: a step every 0.25 s; "-" is a rest; "+" joins a chord
+  - {at: 0.0, every: 0.25, len: 0.2, notes: "D3 F3 A3 - C4+E4 A3 F3 -", until: 9.5, vel: 105}
+  # single notes and chords
+  - {at: 10.0, len: 1.5, chord: [D2, A2, F3]}
+  - {at: 12.0, len: 0.4, note: D4, vel: 127}
+
+moves:
+  - {at: 1.0, to: 3.0, knob: orange, value: 38}               # glide (smooth ease)
+  - {at: 3.0, to: 4.5, knob: green, value: 85, ease: linear}  # glide (linear)
+  - {at: 5.0, knob: white, value: 80}                         # jump
+  - {at: 5.5, press: [blue, green]}                           # push blue and green: page 2 (Pitch, Mix)
+  - {at: 5.7, to: 7.5, knob: blue2, value: 75, ease: sine}    # +12 semitones on page 2
+  - {at: 5.7, to: 7.5, knob: green2, value: 100}              # grains only
+  - {at: 8.0, press: [blue, green]}                           # back to page 1
+  - {at: 8.5, to: 9.5, knobs: [10, null, null, 85]}           # several encoders; null leaves one alone
+  - {at: 10.5, press: orange}                                 # freeze
+  - {at: 13.0, press: orange}                                 # unfreeze

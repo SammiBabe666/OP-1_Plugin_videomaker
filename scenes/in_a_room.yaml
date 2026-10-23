@@ -1,0 +1,16 @@
+# In a room: record a phrase (orange push) and every pass goes through the room until speech melts into a chord.
+plugin: in_a_room
+title: IN A ROOM
+subtitle: Every pass of the loop goes through a room.
+duration: 16
+labels: [Size, Shape, Erode, Mix]
+source: {type: pluck, level: 80}
+envelope: {attack: 2, decay: 250, sustain: 30, release: 200}
+notes:
+  - {at: 0.3, every: 0.22, len: 0.18, notes: "C3 E3 G3 B3 A3 F3 D3 -", until: 3.0}
+moves:
+  - {at: 0.0, knob: green, value: 10}                   # room shape (shown top left)
+  - {at: 0.25, press: orange}                           # capture
+  - {at: 3.5, to: 6.0, knob: orange, value: 85}
+  - {at: 6.0, to: 12.0, knob: white, value: 55}
+  - {at: 12.0, to: 15.5, knob: blue, value: 30}

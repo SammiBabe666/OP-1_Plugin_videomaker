@@ -1,0 +1,18 @@
+# EVA: space choir, tears in rain, ee halo, houston (manual "Try this"); the radio (Com) gets busy at the end.
+plugin: eva
+title: EVA
+subtitle: An astronaut's choir over the helmet radio.
+duration: 16
+labels: [Pressure, Freq, Oxygen, Com]
+knobs: [61, 50, 37, 9]                       # space choir
+envelope: {attack: 250, decay: 600, sustain: 85, release: 1200}
+notes:
+  - {at: 0.2, every: 3.6, len: 3.3, notes: [C2+G2+Eb3, Ab1+Eb2+C3], until: 7.4}
+  - {at: 7.6, len: 3.4, chord: [F3, Ab3, C4]}                         # ee halo, octave +1
+  - {at: 11.4, every: 1.2, len: 1.0, notes: [G2, Bb2, D3, C3], until: 15.8}
+moves:
+  - {at: 3.6, to: 4.4, knobs: [34, 12, 67, 18]}       # tears in rain
+  - {at: 7.2, to: 7.6, knobs: [79, 95, 55, 6]}        # ee halo
+  - {at: 8.0, to: 10.6, knob: green, value: 30, ease: sine}
+  - {at: 11.0, to: 11.4, knobs: [58, 34, 18, 70]}     # houston: beeps, hiss and dropouts
+  - {at: 12.0, to: 15.0, knob: orange, value: 90}

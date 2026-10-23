@@ -1,0 +1,18 @@
+# Oxbow: OB-style polysynth. Pushes switch blue/green/white to Wave, Filter type and Drive.
+plugin: oxbow
+title: OXBOW
+subtitle: An OB-style polysynth, after zvenson's OberVave.
+duration: 14
+labels: [Cutoff, Resonance, Env amount, Detune]
+envelope: {attack: 20, decay: 700, sustain: 70, release: 700}
+notes:
+  - {at: 0.2, every: 1.75, len: 1.6, notes: [D2+F2+A2+C3, Bb1+D2+F2+A2, G1+Bb1+D2+F2, A1+C#2+E2+G2], until: 13.6}
+moves:
+  - {at: 0.5, to: 3.5, knob: blue, value: 80}
+  - {at: 3.6, to: 5.5, knob: orange, value: 45}        # the birds walk out along the horns
+  - {at: 6.0, press: [blue, white]}                    # Wave and Drive pages
+  - {at: 6.2, to: 8.0, knob: blue2, value: 60}
+  - {at: 6.2, to: 8.0, knob: white2, value: 55}
+  - {at: 9.0, press: [blue, white]}
+  - {at: 9.2, to: 12.0, knob: green, value: 70}        # the bell swings with resonance
+  - {at: 12.0, to: 13.5, knob: blue, value: 35}

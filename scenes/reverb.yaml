@@ -1,0 +1,15 @@
+# Reverb: the Elements reverb from Mutable Instruments, drawn as Kali. Her arms count the decay.
+plugin: reverb
+title: REVERB
+subtitle: Reverb, after Mutable Instruments Elements.
+duration: 12
+labels: [Time, Tone, Diffusion, Mix]
+source: {type: pluck, level: 75}
+envelope: {attack: 1, decay: 250, sustain: 0, release: 200}
+notes:
+  - {at: 0.2, every: 0.8, len: 0.2, notes: [E3+B3, -, D3+A3, -, C3+G3, B2+F#3], until: 10.5}
+moves:
+  - {at: 1.0, to: 4.0, knob: blue, value: 95}
+  - {at: 4.0, to: 6.5, knob: green, value: 85}
+  - {at: 6.5, to: 9.0, knob: orange, value: 80}
+  - {at: 9.0, to: 11.5, knob: white, value: 20}

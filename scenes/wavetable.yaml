@@ -1,0 +1,19 @@
+# Wavetable: the manual's "Try this" settings in turn: warm pad, acid (white swept), whistle.
+plugin: wavetable
+title: WAVETABLE
+subtitle: Morphing waves. Analog ladder filter.
+duration: 14
+labels: [Wave, Detune, Cutoff, Resonance]
+knobs: [18, 43, 46, 18]                     # warm pad
+envelope: {attack: 400, decay: 600, sustain: 85, release: 900}
+notes:
+  - {at: 0.3, every: 2.2, len: 2.0, notes: [C2+G2+Eb3, Ab1+Eb2+C3], until: 4.6}
+  - {at: 5.0, every: 0.25, len: 0.18, notes: "C1 C1 C2 C1 Eb1 C1 Bb1 G1", until: 10.0, vel: 110}   # acid, octave -1
+  - {at: 10.4, len: 3.2, note: C4}                                                              # whistle, octave +1
+moves:
+  - {at: 1.0, to: 4.4, knob: blue, value: 60}
+  - {at: 4.7, to: 5.0, knobs: [43, 5, 27, 79]}          # acid
+  - {at: 5.5, to: 7.5, knob: white, value: 70, ease: sine}
+  - {at: 7.5, to: 9.8, knob: white, value: 15, ease: sine}
+  - {at: 10.0, to: 10.3, knobs: [0, 3, 92, 95]}         # whistle
+  - {at: 11.0, to: 13.4, knob: blue, value: 35}

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "op1-plugin-video"
+version = "0.1.0"
+description = "Render videos of hundekraft OP-1 plugin screens, animated by the plugins' own code, with their audio"
+readme = "README.md"
+license = {text = "GPL-3.0-or-later"}
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.22", "Pillow>=9.0", "lxml>=4.6", "PyYAML>=5.4"]
+
+[project.optional-dependencies]
+cairosvg = ["cairosvg>=2.5"]
+
+[project.scripts]
+op1video = "op1video.cli:main"
+
+[tool.setuptools]
+packages = ["op1video"]

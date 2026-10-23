@@ -1,0 +1,18 @@
+# MBIRA: kalimba, thumb wah (page 2: wah and double tine), glass rain (manual "Try this").
+plugin: mbira
+title: MBIRA
+subtitle: A thumb piano with bottle caps.
+duration: 14
+labels: [Strike, Tine, Box, Buzz]
+knobs: [43, 50, 37, 0]                       # kalimba
+envelope: {attack: 1, decay: 2000, sustain: 100, release: 900}
+notes:
+  - {at: 0.2, every: 0.3, len: 0.28, notes: "C3 E3 G3 C4 B3 G3 E3 D3 A2 C3 E3 A3 G3 E3 C3 -", until: 9.6}
+  - {at: 9.8, every: 0.2, len: 0.2, notes: "C5 G4 E5 B4 D5 A4 G5 E5 C5 G4 E5 D5 B4 G4 C5 -", until: 13.6}   # glass rain +1
+moves:
+  - {at: 2.0, to: 4.5, knob: orange, value: 55}       # bottle caps rattle
+  - {at: 4.8, to: 5.0, knobs: [49, 50, 43, 18]}       # thumb wah
+  - {at: 5.0, press: [green, white]}                  # page 2: double tine, wah
+  - {at: 5.2, to: 6.0, knob: white2, value: 70}
+  - {at: 9.4, press: [green, white]}
+  - {at: 9.5, to: 9.8, knobs: [79, 92, 18, 0]}        # glass rain

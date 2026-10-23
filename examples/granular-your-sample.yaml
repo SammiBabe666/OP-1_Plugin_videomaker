@@ -1,0 +1,14 @@
+# Granular plays the slot's sampler recording as grains. `sample:` loads any audio file (up to 6 s is used).
+plugin: granular
+title: GRANULAR
+subtitle: your own sample
+duration: 10
+sample: audio/loop.wav
+labels: [Position, Grain size, Spray, Density]
+envelope: {attack: 300, decay: 500, sustain: 90, release: 900}
+notes:
+  - {at: 0.2, len: 9.0, chord: [C3, G3]}
+moves:
+  - {at: 0.5, to: 8.0, knob: blue, value: 90}
+  - {at: 3.0, to: 6.0, knob: white, value: 50}
+  - {at: 6.0, to: 9.0, knob: orange, value: 85}

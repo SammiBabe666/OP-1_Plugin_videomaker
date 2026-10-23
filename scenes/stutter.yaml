@@ -1,0 +1,18 @@
+# STUTTER on the built-in drum loop: REPEAT, BRAKE, REVERSE, GATE, then freeze (orange push).
+plugin: stutter
+title: STUTTER
+subtitle: A beat-locked stutter.
+duration: 14
+bpm: 110
+labels: [Rate, Mode, Shape, Chance]
+knobs: [50, 10, 30, 0]
+source: {type: drums, level: 85}
+moves:
+  - {at: 1.0, to: 2.5, knob: orange, value: 65}
+  - {at: 4.0, knob: green, value: 35}            # BRAKE
+  - {at: 6.5, knob: green, value: 60}            # REVERSE
+  - {at: 8.5, knob: green, value: 85}            # GATE
+  - {at: 8.5, to: 10.0, knob: blue, value: 80}
+  - {at: 10.5, knob: green, value: 10}
+  - {at: 11.0, press: orange}                    # freeze
+  - {at: 13.0, press: orange}

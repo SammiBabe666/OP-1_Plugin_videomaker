@@ -1,0 +1,15 @@
+# Father: a room that recedes into a long, moving tail. The figure recedes as Distance rises; Gate closes the door.
+plugin: father
+title: FATHER
+subtitle: A room that recedes into a long, moving tail.
+duration: 13
+labels: [Distance, Gate, Color, Mix]
+source: {type: pluck, level: 75}
+envelope: {attack: 1, decay: 250, sustain: 0, release: 200}
+notes:
+  - {at: 0.2, every: 0.5, len: 0.25, notes: "D3 A3 F4 - C3 G3 E4 -", until: 12.0}
+moves:
+  - {at: 1.0, to: 4.5, knob: blue, value: 99}
+  - {at: 4.5, to: 6.5, knob: orange, value: 70}
+  - {at: 7.0, to: 9.5, knob: green, value: 80}       # gated tail
+  - {at: 10.0, to: 12.5, knobs: [30, 0, 80, 40]}

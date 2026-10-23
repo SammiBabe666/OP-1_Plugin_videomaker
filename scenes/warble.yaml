@@ -1,0 +1,15 @@
+# Warble: chorus at half mix, vibrato at full mix, tape wobble at low rate and depth (Maiko #250).
+plugin: warble
+title: WARBLE
+subtitle: Chorus, vibrato and tape wobble.
+duration: 12
+labels: [Rate, Depth, Tone, Mix]
+source: {type: pad, level: 70}
+envelope: {attack: 80, decay: 400, sustain: 85, release: 500}
+notes:
+  - {at: 0.2, every: 2.0, len: 1.9, notes: [E2+B2+G3, C2+G2+E3, D2+A2+F#3, B1+F#2+D3], until: 11.8}
+moves:
+  - {at: 1.0, to: 3.5, knob: blue, value: 20}
+  - {at: 3.5, to: 6.0, knob: orange, value: 99}       # vibrato
+  - {at: 6.5, to: 9.0, knob: green, value: 90}
+  - {at: 9.0, to: 11.5, knob: white, value: 30}

@@ -1,0 +1,19 @@
+# Aether: a tilt theremin. Hold a note, then tilt the OP-1: forward/back bends the pitch, raising the right side
+# lowers the volume, shaking adds vibrato. tilt: [side, front] in degrees (side: right side up +, front: front edge up +).
+plugin: aether
+title: AETHER
+subtitle: A tilt-controlled theremin.
+duration: 12
+labels: [Pitch range, Timbre, Vibrato, Volume tilt]
+envelope: {attack: 150, decay: 300, sustain: 95, release: 800}
+notes:
+  - {at: 0.3, len: 5.2, note: A2}
+  - {at: 6.2, len: 5.4, note: E3}
+moves:
+  - {at: 1.0, to: 3.0, tilt: [0, 25], ease: sine}         # front edge up: pitch bends
+  - {at: 3.0, to: 5.0, tilt: [0, -20], ease: sine}
+  - {at: 5.0, to: 6.0, tilt: [0, 0]}
+  - {at: 6.5, to: 9.0, knob: white, value: 80}
+  - {at: 6.5, to: 8.0, tilt: [20, 10], ease: sine}        # right side up: quieter
+  - {at: 8.0, to: 11.0, tilt: [-10, -15], ease: sine}
+  - {at: 9.0, to: 11.0, knob: green, value: 80}

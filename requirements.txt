@@ -1,0 +1,6 @@
+numpy>=1.22
+Pillow>=9.0
+lxml>=4.6
+PyYAML>=5.4
+# Optional SVG rasterizer, used when the system librsvg is not available (e.g. on Windows):
+# cairosvg>=2.5

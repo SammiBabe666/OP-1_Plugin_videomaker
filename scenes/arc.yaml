@@ -1,0 +1,14 @@
+# Arc: Duddell's singing arc lamp. Raise the current from sine to buzz to scream.
+plugin: arc
+title: ARC
+subtitle: Duddell's singing arc from 1899.
+duration: 12
+labels: [Current, Carbon, Hiss, Strike]
+envelope: {attack: 60, decay: 500, sustain: 90, release: 600}
+notes:
+  - {at: 0.2, every: 1.5, len: 1.4, notes: [C2, Eb2, G2, F2, Eb2, D2, C2, G1], until: 11.8}
+moves:
+  - {at: 0.5, to: 5.0, knob: blue, value: 90}
+  - {at: 5.0, to: 7.5, knob: white, value: 70}
+  - {at: 7.5, to: 10.0, knob: orange, value: 80}
+  - {at: 10.0, to: 11.6, knob: blue, value: 30}

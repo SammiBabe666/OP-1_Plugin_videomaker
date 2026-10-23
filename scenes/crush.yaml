@@ -1,0 +1,15 @@
+# Crush: bit depth, sample rate and drive (Maiko #250).
+plugin: crush
+title: CRUSH
+subtitle: Bit depth, sample rate and drive.
+duration: 12
+labels: [Bits, Rate, Drive, Mix]
+source: {type: saw, level: 65}
+envelope: {attack: 5, decay: 300, sustain: 70, release: 200}
+notes:
+  - {at: 0.1, every: 0.25, len: 0.2, notes: "A1 A2 A1 G2 A1 C3 A1 E2", until: 11.8}
+moves:
+  - {at: 1.0, to: 4.0, knob: blue, value: 10}
+  - {at: 4.0, to: 7.0, knob: green, value: 15}
+  - {at: 7.0, to: 9.5, knob: white, value: 80}
+  - {at: 9.5, to: 11.5, knobs: [60, 70, 25, null]}

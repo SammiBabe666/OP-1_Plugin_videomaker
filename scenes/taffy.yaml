@@ -1,0 +1,18 @@
+# Taffy: CZ brass, clav, glass keys (manual "Try this").
+plugin: taffy
+title: TAFFY
+subtitle: Elastic, CZ-style phase distortion.
+duration: 13
+labels: [Shape, Distortion, Envelope, Resonance]
+knobs: [0, 27, 67, 0]                        # cz brass
+envelope: {attack: 30, decay: 500, sustain: 70, release: 400}
+notes:
+  - {at: 0.3, every: 0.9, len: 0.75, notes: [F2+A2+C3, G2+Bb2+D3, A2+C3+E3, -], until: 4.2}
+  - {at: 4.6, every: 0.2, len: 0.12, notes: "E2 - E2 G2 - A2 E2 -  D2 - D2 E2 G2 - E2 -", until: 8.6, vel: 115}   # clav
+  - {at: 9.0, every: 0.3, len: 0.5, notes: "E4 B4 G4 D5 E4 B4 G4 A4 F#4 D5 B4 E5", until: 12.6}                   # glass keys +1
+moves:
+  - {at: 0.5, to: 4.0, knob: green, value: 55}
+  - {at: 4.3, to: 4.6, knobs: [82, 67, 73, 18]}        # clav
+  - {at: 5.0, to: 8.4, knob: blue, value: 40}
+  - {at: 8.7, to: 9.0, knobs: [0, 9, 49, 79]}          # glass keys
+  - {at: 9.5, to: 12.4, knob: orange, value: 95}

@@ -1,0 +1,15 @@
+# Washer on a pluck line: warm ensemble, then foam up into a jet flanger (manual "Try this").
+plugin: washer
+title: WASHER
+subtitle: Chorus, ensemble and flanger.
+duration: 13
+labels: [Spin, Depth, Foam, Mix]
+knobs: [20, 90, 0, 80]                       # warm ensemble
+source: {type: pad, level: 70}
+envelope: {attack: 60, decay: 400, sustain: 80, release: 500}
+notes:
+  - {at: 0.2, every: 1.6, len: 1.5, notes: [C2+G2+E3, A1+E2+C3, F1+C2+A2, G1+D2+B2], until: 12.8}
+moves:
+  - {at: 4.0, to: 6.5, knobs: [15, 80, 90, 70]}       # jet wash
+  - {at: 7.0, to: 9.5, knob: blue, value: 55}
+  - {at: 10.0, to: 12.5, knobs: [20, 90, 0, 80]}

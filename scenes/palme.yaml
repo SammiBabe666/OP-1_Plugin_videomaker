@@ -1,0 +1,18 @@
+# Palme: twelve sympathetic strings. Play a chord, push orange (latch) and the strings hold it forever.
+plugin: palme
+title: PALME
+subtitle: Twelve sympathetic strings and a gong.
+duration: 14
+labels: [Tuning, Sustain, Excite, Mix]
+source: {type: pluck, level: 80}
+envelope: {attack: 2, decay: 300, sustain: 20, release: 300}
+notes:
+  - {at: 0.2, every: 0.35, len: 0.3, notes: "C2 G2 C3 Eb3 G3 Eb3 C3 G2", until: 5.0}
+  - {at: 9.0, every: 0.35, len: 0.3, notes: "Bb2 F3 D4 F3", until: 13.5}
+moves:
+  - {at: 1.0, to: 3.0, knob: green, value: 90}
+  - {at: 4.5, press: orange}                           # latch: an endless drone
+  - {at: 6.0, press: blue}                             # page 2: palm leaf to gong
+  - {at: 6.2, to: 8.8, knob: blue2, value: 85}
+  - {at: 9.0, press: blue}
+  - {at: 12.5, press: orange}

@@ -1,0 +1,13 @@
+# An effect on your own audio. Any format ffmpeg reads; it is decoded to 44.1 kHz mono.
+# Paths are relative to this file. `make example-audio` writes a test loop to examples/audio/loop.wav.
+plugin: washer
+title: WASHER
+subtitle: on your own audio
+duration: 10
+labels: [Spin, Depth, Foam, Mix]
+knobs: [20, 90, 0, 80]
+source: {file: audio/loop.wav, level: 80}
+moves:
+  - {at: 3, to: 6, knobs: [15, 80, 90, 70]}
+  - {at: 7, to: 9.5, knob: orange, value: 0}
+output: {layout: square}
