@@ -51,6 +51,15 @@ name as a bundle plugin overrides it. Include SDK headers by name (`#include "op
 This is also a quick way to see your screen at 60 Hz with real audio while you work on it: the simulator compiles in
 a few seconds and is cached until a source file changes.
 
+### Code that only works on the device
+
+A plugin may read firmware memory or Blackfin registers directly, e.g. a key-state byte at a raw address or the
+`CYCLES` counter through inline assembly. That crashes or doesn't compile on the host. Either keep such code
+under `#ifndef OP1_HOST` with a host fallback (`host_shift`, `host_cycles` and the other stand-ins in
+`sim/include/harness/op1_host.h`), or add an exact-match patch in `op1video/compat.py`. VAPORA is the example: its
+screen reads the Shift byte at `0x01DD7F78` and `CYCLES`, and two patches point them at `host_shift` and
+`host_cycles`.
+
 ### Host-mode rules your plugin should follow
 
 These come from the SDK and are what make a plugin renderable on the host:

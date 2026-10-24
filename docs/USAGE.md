@@ -29,9 +29,9 @@ Used by `render`, `render-all` and `still`.
 
 | option | default | |
 |---|---|---|
-| `--layout card\|screen\|square` | `card` | see Layouts below (a scene's `output: {layout: ...}` also sets it) |
+| `--layout card\|screen\|square\|vertical` | `card` | see Layouts below (a scene's `output: {layout: ...}` also sets it) |
 | `--format mp4\|webm\|mov\|gif\|png` | `mp4` | see Formats below |
-| `--size WxH` | per layout | output size; card 1920x1080, square 1080x1080, screen 320x160 x `--scale` |
+| `--size WxH` | per layout | output size; card 1920x1080, square 1080x1080, vertical 1080x1920, screen 320x160 x `--scale` |
 | `--scale N` | `4` | screen layout: output pixels per OLED pixel (4 = 1280x640) |
 | `--fps N` | scene, else 30 | 60, 30, 20, 15, 12 ... (a divisor of 60: the OP–1 screen updates at 60 Hz) |
 | `--duration S` | scene | override the scene's length |
@@ -52,6 +52,9 @@ Used by `render`, `render-all` and `still`.
   and live values (page-2 values when an encoder is pushed to page 2), and a keyboard strip that lights the notes
   being played.
 * **square** (1080x1080): the same, stacked, for social posts.
+* **vertical** (1080x1920, 9:16) for Reels, Shorts and TikTok: the plugin name, the OLED, the current caption or
+  preset (name, "PRESET 02 / 06", a progress segment per preset), the four encoders in a 2x2 grid, the keyboard and
+  a credit line with the plugin's author.
 * **screen**: only the OLED, at `--scale` or `--size`. Use it to embed in pages, e.g. the workshop's cards
   (`--size 960x480` or `--size 400x200`).
 
@@ -74,8 +77,11 @@ Used by `render`, `render-all` and `still`.
 # 60 fps, as smooth as the device
 ./op1video.py render pew --fps 60
 
-# a vertical-ish post: square, 8 seconds
+# a square post, 8 seconds
 ./op1video.py render elg --layout square --duration 8
+
+# a vertical preset showcase for your own plugin (source folder with plugin.json) and its presets
+./op1video.py --plugin-dir ~/dev/vapora/plugin render vapora --scene examples/vapora-presets.yaml --layout vertical
 
 # preview a scene while writing it: a small fast render and a still
 ./op1video.py render mbira --scene my.yaml --layout screen --scale 2 --jobs 8

@@ -58,6 +58,10 @@ It reads the script and runs device timing:
 * **Screen**: `update(scr, dt)` on every 60 Hz GUI tick with `dt` of 16/17 ms, as on the device — screens advance
   per tick, so this keeps their speed right at any video frame rate. Every `60 / fps`-th tick is written out.
 * **Controls**: knob words, page-2/latch flags, shift and tilt are applied per frame from the script.
+* **Clock**: `host_cycles` stands in for the Blackfin's 400 MHz `CYCLES` register and advances with each GUI tick,
+  for screens that time their animation with it.
+* **Envelopes**: each voice keeps the envelope that was current when its note started; `env` events (from scene
+  presets) change it for later notes.
 
 Builds are cached in `.cache/build/<plugin>-<hash>/`; the hash covers the compiler, flags, the simulator files,
 compatibility patches and every source file of the plugin. Flags: `-std=gnu11 -O2 -fwrapv -fno-strict-aliasing`
@@ -79,6 +83,7 @@ tuner 0
 source_file /path/source.s16            (optional: mono s16le 44.1 kHz)
 sample_file /path/sample.s16            (optional: granular's sampler slot)
 k <frame> <w0..w7> <page0..page3> <shift> <ax> <ay> <az>
+env <sample> <attack ms> <decay ms> <sustain Q15> <release ms>    (envelope for notes from then on)
 on <sample> <midi note> <velocity>
 off <sample> <midi note>
 end

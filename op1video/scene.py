@@ -24,6 +24,7 @@ from pathlib import Path
 
 import yaml
 
+from . import presets as presets_mod
 from .sdk import Plugin
 
 RATE = 44100
@@ -118,6 +119,7 @@ class Scene:
     fps: int = 30
     bpm: int = 120
     labels: list[str] = field(default_factory=lambda: [e.capitalize() for e in ENCODERS])
+    labels2: list[str] = field(default_factory=list)    # names for page-2 (pushed) encoders
     start: list[int] = field(default_factory=list)        # 8 words (Q15)
     envelope: tuple[int, int, int, int] = (10, 300, 80, 500)   # ms, ms, %, ms
     master: int = 50
@@ -133,6 +135,8 @@ class Scene:
     shift: list[tuple[float, float]] = field(default_factory=list)
     tilt: list[Track] = field(default_factory=list)
     notes: list[tuple[float, float, int, int]] = field(default_factory=list)   # start s, end s, note, vel
+    env_events: list[tuple[float, tuple[int, int, int, int]]] = field(default_factory=list)  # envelope from t on
+    captions: list[dict] = field(default_factory=list)    # {at, to, title, text, index, count}
     output: dict = field(default_factory=dict)
     base_dir: Path = Path(".")
 
@@ -173,6 +177,10 @@ class Scene:
     def held_at(self, t: float) -> list[int]:
         return sorted({n for s, e, n, _ in self.notes if s <= t < e})
 
+    def caption_at(self, t: float) -> dict | None:
+        live = [c for c in self.captions if c["at"] <= t < c["to"]]
+        return live[-1] if live else None
+
     # ----------------------------------------------------------------------------------- script for op1sim
     def script(self, source_raw: Path | None = None, sample_raw: Path | None = None) -> str:
         a, d, s, r = self.envelope
@@ -195,6 +203,8 @@ class Scene:
             w, pg, sh, ac = self.words_at(t), self.pages_at(t), self.shift_at(t), self.tilt_at(t)
             lines.append("k %d %s %s %d %s" % (f, " ".join(map(str, w)), " ".join(map(str, pg)), sh,
                                               " ".join(map(str, ac))))
+        for t, (a, d, s, r) in self.env_events:
+            lines.append(f"env {round(t * RATE)} {int(a)} {int(d)} {round(s * 32767 / 100)} {int(r)}")
         for start, end, note, vel in self.notes:
             lines.append(f"on {round(start * RATE)} {note} {vel}")
             lines.append(f"off {round(end * RATE)} {note}")
@@ -245,6 +255,7 @@ def from_dict(d: dict, plugin: Plugin, base_dir: Path = Path(".")) -> Scene:
     if sc.fps not in FPS_OK:
         raise SceneError(f"fps must divide 60 (the OP-1's screen rate): one of {FPS_OK}")
     sc.bpm = int(d.get("bpm", 120))
+    sc.labels2 = [str(x) if x else "" for x in (d.get("labels2") or [])][:4]
     labels = d.get("labels")
     if labels:
         sc.labels = [str(x) for x in labels][:4] + sc.labels[len(labels):]
@@ -281,10 +292,23 @@ def from_dict(d: dict, plugin: Plugin, base_dir: Path = Path(".")) -> Scene:
     sc.pages = [int(bool(x)) for x in (d.get("pages") or [0, 0, 0, 0])][:4] + [0] * 4
     sc.pages = sc.pages[:4]
 
-    moves = d.get("moves") or []
+    moves = list(d.get("moves") or [])
     for m in moves:
         if not isinstance(m, dict):
             raise SceneError(f"each entry under moves: must be a mapping, got {m!r}")
+    entries = _load_presets(sc, d.get("presets") or [], plugin)
+    if entries and entries[0][0] <= 0:                    # a preset at 0 is also the start state
+        for k in PRESET_WORDS:
+            sc.start[k] = max(0, min(32767, entries[0][2].knobs[k]))
+        sc.envelope = entries[0][2].envelope
+    # presets become moves, merged in time order with the scene's own (a move at the same time wins)
+    # the encoders glide (if glide: is set); page-2 words (often discrete choices) always switch at once
+    preset_moves = []
+    for at, e, pr in entries:
+        g = float(e.get("glide", 0))
+        preset_moves.append({"at": at, **({"to": at + g} if g > 0 else {}), "_words": {k: pr.knobs[k] for k in (0, 1, 2, 3)}})
+        preset_moves.append({"at": at, "_words": {k: pr.knobs[k] for k in (5, 6, 7)}})
+    moves = preset_moves + moves
     for m in sorted(moves, key=lambda m: float(m.get("at", 0))):     # later moves override earlier ones
         at = float(m.get("at", 0))
         to = float(m["to"]) if "to" in m else None
@@ -299,6 +323,11 @@ def from_dict(d: dict, plugin: Plugin, base_dir: Path = Path(".")) -> Scene:
             continue
         if "shift" in m:
             sc.shift.append((at, to if to is not None else at + float(m.get("len", 1.0))))
+            continue
+        if "_words" in m:                                 # from a preset
+            for k, v in m["_words"].items():
+                tr = sc.tracks.setdefault(k, Track([(0.0, float(start[k]), "step")]))
+                tr.move(at, to, float(max(0, min(32767, v))), ease)
             continue
         if "tilt" in m:                                   # [side, front] in degrees
             tv = m["tilt"]
@@ -327,8 +356,54 @@ def from_dict(d: dict, plugin: Plugin, base_dir: Path = Path(".")) -> Scene:
             tr.move(at, to, float(_q15(v)), ease)
 
     sc.notes = _notes(d.get("notes"), sc.duration)
+    _apply_presets(sc, entries)
+    for c in d.get("captions") or []:
+        if not isinstance(c, dict) or "at" not in c:
+            raise SceneError(f"each caption needs at: ({c!r})")
+        sc.captions.append({"at": float(c["at"]), "to": float(c.get("to", sc.duration)),
+                            "title": str(c.get("title", "")), "text": str(c.get("text", "")),
+                            "index": c.get("index"), "count": c.get("count")})
+    sc.captions.sort(key=lambda c: c["at"])
     sc.output = dict(d.get("output") or {})
     return sc
+
+
+PRESET_WORDS = (0, 1, 2, 3, 5, 6, 7)                      # word 4 is the engine selector: the plugin's own
+
+
+def _load_presets(sc: Scene, spec: list, plugin: Plugin) -> list:
+    """presets: [{at: 4, file: "glass veil.aif", glide: 0.5, caption: "...", text: "..."}]"""
+    entries = []
+    for e in spec:
+        if isinstance(e, str):
+            e = {"file": e}
+        if not isinstance(e, dict) or "file" not in e:
+            raise SceneError(f"each preset needs file: ({e!r})")
+        try:
+            pr = presets_mod.load((sc.base_dir / str(e["file"])).expanduser())
+        except presets_mod.PresetError as err:
+            raise SceneError(str(err))
+        if pr.type and pr.type != plugin.display:
+            raise SceneError(f"{pr.path.name} is a preset for {pr.type!r}, not {plugin.display!r}")
+        entries.append((float(e.get("at", 0)), e, pr))
+    entries.sort(key=lambda x: x[0])
+    return entries
+
+
+def _apply_presets(sc: Scene, entries: list) -> None:
+    """Each preset's envelope and octave apply to notes starting from its time until the next preset; its
+    caption shows over the same span."""
+    for i, (at, e, pr) in enumerate(entries):
+        end = entries[i + 1][0] if i + 1 < len(entries) else sc.duration
+        sc.env_events.append((at, pr.envelope))
+        if pr.octave:
+            sc.notes = [(s, t, n + 12 * pr.octave, v) if at <= s < end else (s, t, n, v)
+                        for s, t, n, v in sc.notes]
+        if e.get("caption", True) is not False:
+            title = e["caption"] if isinstance(e.get("caption"), str) else pr.name
+            sc.captions.append({"at": at, "to": end, "title": str(title), "text": str(e.get("text", "")),
+                                "index": i + 1, "count": len(entries)})
+    sc.notes = [(s, t, max(0, min(127, n)), v) for s, t, n, v in sc.notes]
 
 
 def load(path: Path, plugin: Plugin) -> Scene:

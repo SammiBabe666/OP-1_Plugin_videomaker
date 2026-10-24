@@ -29,6 +29,7 @@ int16_t  host_fx_meter[3];
 void    *host_fx_scratch[3];
 int      host_fx_pos;
 uint8_t  host_shift;
+uint32_t host_cycles;
 
 int16_t  host_accel[3];               /* accelerometer x, y, z (aether: tilt) */
 int      host_tuner;                  /* live-input engines: T2 tuner page shown */

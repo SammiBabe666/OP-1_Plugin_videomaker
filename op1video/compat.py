@@ -25,6 +25,16 @@ PATCHES: dict[str, dict[str, list[tuple[str, str]]]] = {
              "#if 1 /* op1video: device text path */\n unsigned n=text_slot++;if(n>=12)return;"),
         ],
     },
+    # VAPORA (AiAAAA), a user plugin rendered with --plugin-dir: the screen reads the Shift byte and the CYCLES
+    # register directly on the device; on the host they come from the simulator.
+    "vapora": {
+        "vapora_screen.c": [
+            ("    return *(volatile uint8_t *)0x01DD7F78!=0;",
+             "    return host_shift!=0; /* op1video: host Shift */"),
+            ('    uint32_t c; __asm__ volatile("%0 = CYCLES;" : "=d"(c)); return c;',
+             "    return host_cycles; /* op1video: host 400 MHz cycle counter */"),
+        ],
+    },
 }
 
 

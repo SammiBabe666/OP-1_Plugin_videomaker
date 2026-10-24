@@ -1,0 +1,50 @@
+# VAPORA (by AiAAAA) preset showcase, made for the vertical layout.
+# Vapora isn't in the workshop bundle: point --plugin-dir at its source (the folder containing vapora/plugin.json),
+# and put the six preset files in a folder called vapora-presets next to this scene:
+#
+#   ./op1video.py --plugin-dir ~/dev/vapora-main/plugin render vapora \
+#       --scene examples/vapora-presets.yaml --layout vertical
+#
+plugin: vapora
+title: VAPORA
+subtitle: PADsynth pads and spectral textures
+duration: 48.5
+fps: 30
+labels: [Morph, Thickness, Brightness, Motion]
+labels2: [Character, Interval, Sun, Speed]
+master: 45
+
+presets:
+  - {at: 0.0,  file: vapora-presets/aurora min7.aif,  text: "Velvet character · unison",            glide: 0.6}
+  - {at: 7.5,  file: vapora-presets/glass veil.aif,   text: "Porcelain character · fifth below",    glide: 0.6}
+  - {at: 15.0, file: vapora-presets/nebula fifth.aif, text: "Nebula character · fifth below",       glide: 0.6}
+  - {at: 22.5, file: vapora-presets/porcelain.aif,    text: "Warm character · minor third · octave +1", glide: 0.6}
+  - {at: 30.0, file: vapora-presets/sub vapor.aif,    text: "Warm character · fifth below · octave −1", glide: 0.6}
+  - {at: 37.5, file: vapora-presets/velvet keys.aif,  text: "Warm character · unison",              glide: 0.6}
+
+notes:
+  # 1 aurora min7: slow minor-seventh pads
+  - {at: 0.15, len: 3.3, chord: [A2, C3, E3, G3], vel: 96}
+  - {at: 3.65, len: 3.0, chord: [D3, F3, A3, C4], vel: 100}
+  # 2 glass veil: open major-seventh voicings
+  - {at: 7.6,  len: 3.2, chord: [E3, G#3, B3, D#4], vel: 96}
+  - {at: 11.1, len: 3.0, chord: [C#3, E3, G#3, B3], vel: 100}
+  # 3 nebula fifth: single lines, the fifth below comes from the preset's interval
+  - {at: 15.1, len: 3.3, chord: [D3], vel: 104}
+  - {at: 18.6, len: 3.2, chord: [F3, A3], vel: 100}
+  # 4 porcelain (octave +1): plucked arpeggio
+  - {at: 22.6, every: 0.3, len: 0.24, notes: "A2 C3 E3 G3 E3 C3  F2 A2 C3 E3 C3 A2  G2 B2 D3 F3 D3 B2  E2 G#2 B2 D3 B2 G#2", until: 29.6, vel: 100}
+  # 5 sub vapor (octave -1): eighth-note bass
+  - {at: 30.05, every: 0.25, len: 0.18, notes: "A2 A2 A3 A2 G2 G2 G3 G2 F2 F2 F3 F2 E2 E2 E3 G2", until: 37.3, vel: 110}
+  # 6 velvet keys: chord stabs, then a held chord to end
+  - {at: 37.6, every: 0.625, len: 0.5, notes: [A2+C3+E3+G3, A2+C3+E3+G3, F2+A2+C3+E3, F2+A2+C3+E3, C3+E3+G3+B3, C3+E3+G3+B3, G2+B2+D3+E3, G2+B2+D3+E3], until: 44.6, vel: 98}
+  - {at: 45.0, len: 2.4, chord: [A2, C3, E3, G3], vel: 100}
+
+moves:
+  # one control moved per preset, to show what the encoders do on screen
+  - {at: 2.0,  to: 5.5,  knob: white, value: 92}        # brightness raises the sun
+  - {at: 9.0,  to: 13.0, knob: green, value: 95}        # thickness spins and grows the star
+  - {at: 16.5, to: 20.5, knob: orange, value: 95}       # motion
+  - {at: 24.0, to: 28.5, knob: blue, value: 85}         # morph
+  - {at: 31.5, to: 35.5, knob: white, value: 65}        # brightness
+  - {at: 40.0, to: 44.0, knob: green, value: 80}        # thickness

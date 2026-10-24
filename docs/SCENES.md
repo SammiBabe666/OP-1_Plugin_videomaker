@@ -38,6 +38,7 @@ Times are in seconds from the start. Values are percentages of an encoder's rang
 | `fps` | 30 | must divide 60 |
 | `bpm` | 120 | beat clock for STUTTER, In a room's synced loops, and the `drums` source |
 | `labels` | Blue, Green, White, Orange | up to four encoder names |
+| `labels2` | | names shown while an encoder is pushed to page 2, e.g. `[Character, Interval, Sun, Speed]` |
 | `knobs` | plugin.json `defaults` | four start values; `null` keeps a default |
 | `page2` | plugin.json `page2_defaults` | start values of the page-2 words (blue2, green2, white2) |
 | `pages` | `[0, 0, 0, 0]` | start with an encoder already pushed to page 2 / latched (1) |
@@ -47,7 +48,9 @@ Times are in seconds from the start. Values are percentages of an encoder's rang
 | `source` | `{type: pluck, level: 70}` | the dry signal for effects and Amp (below) |
 | `sample` | built-in demo | an audio file for Granular's sampler slot (decoded to 44.1 kHz mono, up to 6 s) |
 | `tuner` | false | Amp: render its T2 tuner page instead of the T1 page |
-| `output` | | `{layout: square}` makes that the default layout for this scene |
+| `output` | | `{layout: vertical}` makes that the default layout for this scene |
+| `presets` | | load OP–1 preset files at given times (below) |
+| `captions` | | text shown at given times in the card, square and vertical layouts (below) |
 
 ## notes
 
@@ -98,6 +101,43 @@ encoder takes over from an earlier one.
 | `tilt: [side, front]` | degrees, −90..90. side: right side up is positive; front: front edge up is positive. Glides with `to` |
 
 The card layout shows page-2 values on an encoder while it is pushed (label `· P2`).
+
+## presets
+
+Play through saved sounds. Each entry loads an OP–1 synth preset file (`.aif`, as saved on the OP–1 or shipped
+with a plugin) at a time:
+
+```yaml
+presets:
+  - {at: 0,   file: presets/aurora min7.aif, text: "Velvet character · unison"}
+  - {at: 7.5, file: presets/glass veil.aif, glide: 0.6, caption: "Glass Veil"}
+```
+
+A preset sets, from its `at` until the next preset:
+
+* the four encoders and the three page-2 words (the plugin's own saved values),
+* the envelope, from the preset's T2 settings, for notes that start from then on (a note keeps the envelope it
+  started with, as on the OP–1),
+* the preset's octave, added to notes that start in its span,
+* a caption with the preset's name (or `caption:`), the optional `text:`, and "PRESET 02 / 06".
+
+`glide:` (seconds) sweeps the four encoders to the new values instead of jumping; page-2 words always switch at
+once, since they are often discrete choices. `caption: false` hides the caption. Moves in `moves:` still work on
+top of presets: a move at the same time as a preset wins. Paths are relative to the scene file. A preset made for
+another engine is an error.
+
+Not rendered: the preset's T3 effect and T4 LFO. They are stock OP–1 firmware, not part of the plugin, so the
+audio is dry. The OP–1 does not document its envelope time curve; the conversion in `op1video/presets.py` is fitted
+to the attack times plugin authors pair with their saved values, and is close rather than exact.
+
+## captions
+
+```yaml
+captions:
+  - {at: 0, to: 4, title: "Fourteen characters", text: "push blue, then turn"}
+```
+
+`to` defaults to the end of the scene. Captions fade in and out; presets add their own.
 
 ## source (effects and Amp)
 

@@ -49,6 +49,9 @@ as `op1video`.
 ./op1video.py render snowglobe --layout square
 ./op1video.py render taffy --layout screen --scale 2 --format gif --duration 6
 
+# a vertical (9:16) video of your own plugin stepping through its presets
+./op1video.py --plugin-dir ~/dev/vapora/plugin render vapora --scene examples/vapora-presets.yaml --layout vertical
+
 # your own performance (see docs/SCENES.md), or a starter scene to edit
 ./op1video.py scene hail -o my-hail.yaml
 ./op1video.py render hail --scene my-hail.yaml
@@ -70,7 +73,7 @@ All options: [docs/USAGE.md](docs/USAGE.md).
 |---|---|
 | [docs/INSTALL.md](docs/INSTALL.md) | Installing on macOS, Linux and Windows (WSL), and checking it with `doctor` |
 | [docs/USAGE.md](docs/USAGE.md) | Every command and option, layouts, formats, batch rendering |
-| [docs/SCENES.md](docs/SCENES.md) | Writing scenes: notes, chords, sequences, knob moves, presses, page 2, tilt, audio input |
+| [docs/SCENES.md](docs/SCENES.md) | Writing scenes: notes, chords, sequences, knob moves, presses, page 2, tilt, audio input, presets, captions |
 | [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md) | Architecture, the host shim, timing, file formats, how fidelity was checked |
 | [docs/ADDING-PLUGINS.md](docs/ADDING-PLUGINS.md) | New bundle versions, your own `.knl` plugin, compatibility patches |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Errors and fixes |
@@ -89,7 +92,8 @@ op1-plugin-video/
 │   ├── render.py            build -> simulate -> rasterise (parallel) -> lay out -> encode
 │   ├── svgframe.py          applies recorded node state and drawing to the plugin SVG for each frame
 │   ├── raster.py            SVG rasterizers: librsvg (ctypes), cairosvg, resvg
-│   ├── compose.py           layouts: screen, card, square
+│   ├── compose.py           layouts: screen, card, square, vertical
+│   ├── presets.py           reads OP-1 preset files (.aif): knobs, envelope, octave
 │   └── encode.py            ffmpeg: mp4, webm, mov, gif, png sequence; WAV and normalisation
 ├── sim/                     the C host simulator
 │   ├── include/harness/op1_host.h   host stand-ins for every firmware address in the plugin API

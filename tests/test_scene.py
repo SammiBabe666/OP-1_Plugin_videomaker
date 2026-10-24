@@ -96,8 +96,84 @@ class ShippedScenes(unittest.TestCase):
         import yaml
         for f in sorted((ROOT / "scenes").glob("*.yaml")) + sorted((ROOT / "examples").glob("*.yaml")):
             d = yaml.safe_load(f.read_text())
+            if any(not (f.parent / e["file"]).exists() for e in d.get("presets") or []):
+                d.pop("presets")                          # preset files you supply yourself (examples/README.md)
             with self.subTest(scene=f.name):
-                scene.from_dict(d, fake_plugin("fx" if d.get("source") else "synth"))
+                scene.from_dict(d, fake_plugin("fx" if d.get("source") else "synth"), f.parent)
+
+
+def write_preset(path, name="demo", knobs=(1000, 2000, 3000, 4000, 21248, 5000, 6000, 7000), adsr=(64, 9000, 16384, 7000),
+                 octave=0, kind="demo"):
+    """an OP-1 style AIFC: FORM/AIFC with the patch JSON in an APPL chunk signed 'op-1'"""
+    import json
+    import struct
+    body = b"op-1" + json.dumps({"type": kind, "name": name, "knobs": list(knobs), "adsr": list(adsr) + [2048, 5568, 4000, 4000],
+                                 "octave": octave, "fx_active": True, "fx_type": "delay", "lfo_active": False,
+                                 "lfo_type": "tremolo"}).encode() + b"\0"
+    if len(body) & 1:
+        body += b"\0"
+    chunks = b"FVER" + struct.pack(">II", 4, 0xA2805140) + b"APPL" + struct.pack(">I", len(body)) + body
+    Path(path).write_bytes(b"FORM" + struct.pack(">I", 4 + len(chunks)) + b"AIFC" + chunks)
+
+
+class Presets(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self.dir = Path(tempfile.mkdtemp())
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def test_read(self):
+        from op1video import presets
+        write_preset(self.dir / "a.aif", name="glass veil", octave=1)
+        p = presets.load(self.dir / "a.aif")
+        self.assertEqual((p.name, p.octave, p.knobs[5], p.fx, p.lfo), ("glass veil", 1, 5000, "delay", None))
+        a, d, s, r = p.envelope
+        self.assertEqual(a, 5)                            # 64 is the shortest attack
+        self.assertEqual(d, 1500)
+        self.assertEqual(s, 50)
+        self.assertTrue(presets.env_ms(16320) >= presets.env_ms(12000) >= presets.env_ms(4000))
+
+    def test_scene_presets(self):
+        write_preset(self.dir / "one.aif", name="one", knobs=(32767, 0, 0, 0, 21248, 9000, 100, 200))
+        write_preset(self.dir / "two.aif", name="two", knobs=(0, 32767, 0, 0, 21248, 20000, 300, 400), octave=-1)
+        d = {"duration": 4, "presets": [{"at": 0, "file": "one.aif"}, {"at": 2, "file": "two.aif", "glide": 1}],
+             "notes": [{"at": 0.5, "note": "C3"}, {"at": 2.5, "note": "C3"}],
+             "moves": [{"at": 3.5, "knob": "blue", "value": 50}]}
+        sc = scene.from_dict(d, fake_plugin(), self.dir)
+        self.assertEqual(sc.words_at(1)[:2], [32767, 0])
+        self.assertEqual(sc.words_at(1)[4], 0x5300 + 32)  # the selector stays the plugin's
+        mid = sc.words_at(2.5)
+        self.assertTrue(0 < mid[0] < 32767)               # encoders glide ...
+        self.assertEqual(mid[5], 20000)                   # ... page-2 words switch at once
+        self.assertEqual(sc.words_at(3.6)[0], 16384)      # a later move still applies
+        self.assertEqual(sorted(n for _, _, n, _ in sc.notes), [48, 60])   # octave -1 from the second preset
+        self.assertEqual([round(t, 1) for t, _ in sc.env_events], [0.0, 2.0])
+        self.assertEqual([(c["title"], c["index"], c["count"]) for c in sc.captions], [("one", 1, 2), ("two", 2, 2)])
+        self.assertEqual(sc.caption_at(3)["title"], "two")
+        self.assertIn("env 88200", sc.script())
+
+    def test_wrong_engine(self):
+        write_preset(self.dir / "x.aif", kind="eva")
+        with self.assertRaises(scene.SceneError):
+            scene.from_dict({"presets": [{"at": 0, "file": "x.aif"}]}, fake_plugin(), self.dir)
+
+
+class Layouts(unittest.TestCase):
+    def test_vertical_compose(self):
+        import numpy as np
+        from op1video import compose
+        sc = scene.from_dict({"duration": 2, "notes": [{"at": 0, "note": "C3", "len": 1}],
+                              "captions": [{"at": 0, "title": "hello", "text": "world"}]}, fake_plugin())
+        lay = compose.make("vertical", sc, fake_plugin())
+        self.assertEqual(lay.size, (1080, 1920))
+        w, h = lay.screen_px
+        self.assertEqual(w, 2 * h)
+        out = lay.compose(np.zeros((h, w, 3), np.uint8),
+                          compose.FrameInfo(t=1.0, words=sc.words_at(1), pages=[0] * 4, held=[60]))
+        self.assertEqual(out.shape, (1920, 1080, 3))
 
 
 class Frames(unittest.TestCase):

@@ -60,7 +60,7 @@ extern const op1_screen_t OP1V_SCREEN;
 
 /* ------------------------------------------------------------------------------------------------ script */
 typedef struct { int16_t p[8]; uint8_t pg[4]; uint8_t shift; int16_t accel[3]; } frame_knobs;
-typedef struct { int64_t at; int kind; int note; int vel; } event;   /* kind 1 on, 0 off */
+typedef struct { int64_t at; int kind; int note; int vel; int env[4]; } event;   /* kind 0 off, 1 on, 2 envelope */
 
 static frame_knobs *fk;
 static int n_frames, fps = 30;
@@ -78,7 +78,8 @@ static int cmp_ev(const void *a, const void *b)
 {
     const event *x = a, *y = b;
     if (x->at != y->at) return x->at < y->at ? -1 : 1;
-    return x->kind - y->kind;             /* offs before ons at the same time */
+    return x->kind == 2 || y->kind == 2 ? y->kind - x->kind      /* envelope changes first, then */
+                                        : x->kind - y->kind;     /* offs before ons at the same time */
 }
 
 static int load_script(const char *path)
@@ -117,6 +118,11 @@ static int load_script(const char *path)
             if (key[1] == 'n' && fscanf(f, "%d", &vel) != 1) return -1;
             if (n_ev < MAX_EVENTS) ev[n_ev++] = (event){ at, key[1] == 'n', note, vel };
         }
+        else if (!strcmp(key, "env")) {                  /* env <sample> a d s r: envelope for notes from then on */
+            long long at; int e[4];
+            if (fscanf(f, "%lld %d %d %d %d", &at, &e[0], &e[1], &e[2], &e[3]) != 5) return -1;
+            if (n_ev < MAX_EVENTS) ev[n_ev++] = (event){ at, 2, 0, 0, { e[0], e[1], e[2], e[3] } };
+        }
         else if (!strcmp(key, "end")) break;
         else { fprintf(stderr, "op1sim: unknown script key %s\n", key); fclose(f); return -1; }
     }
@@ -132,19 +138,22 @@ static uint32_t v_rng = 0x1234567u;
 static int32_t v_noise(void) { v_rng = v_rng * 1664525u + 1013904223u; return (int32_t)(v_rng >> 16) - 32768; }
 
 /* ADSR in Q15 per sample. stage: 0 off, 1 attack, 2 decay, 3 sustain, 4 release */
-typedef struct { int stage; int32_t lvl; int32_t rel_step; } v_adsr;
+/* each voice keeps the envelope it started with */
+typedef struct { int stage; int32_t lvl; int32_t rel_step; int a, d, s, r; } v_adsr;
 static int32_t step_for(int ms, int32_t span) { int n = ms * RATE / 1000; return n < 1 ? span : (span + n - 1) / n; }
 static int32_t adsr_tick(v_adsr *e)
 {
     switch (e->stage) {
-    case 1: e->lvl += step_for(env_a, 32767); if (e->lvl >= 32767) { e->lvl = 32767; e->stage = 2; } break;
-    case 2: e->lvl -= step_for(env_d, 32767 - env_s > 0 ? 32767 - env_s : 1); if (e->lvl <= env_s) { e->lvl = env_s; e->stage = 3; } break;
+    case 1: e->lvl += step_for(e->a, 32767); if (e->lvl >= 32767) { e->lvl = 32767; e->stage = 2; } break;
+    case 2: e->lvl -= step_for(e->d, 32767 - e->s > 0 ? 32767 - e->s : 1); if (e->lvl <= e->s) { e->lvl = e->s; e->stage = e->s > 0 ? 3 : 4; e->rel_step = 0; } break;
+    case 3: if (e->s <= 0) { e->lvl = 0; e->stage = 0; } break;
     case 4: e->lvl -= e->rel_step; if (e->lvl <= 0) { e->lvl = 0; e->stage = 0; } break;
     default: break;
     }
     return e->lvl;
 }
-static void adsr_release(v_adsr *e) { if (e->stage) { e->stage = 4; e->rel_step = step_for(env_r, e->lvl > 0 ? e->lvl : 1); } }
+static void adsr_release(v_adsr *e) { if (e->stage) { e->stage = 4; e->rel_step = step_for(e->r, e->lvl > 0 ? e->lvl : 1); } }
+static void adsr_start(v_adsr *e) { *e = (v_adsr){ .stage = 1, .a = env_a, .d = env_d, .s = env_s, .r = env_r }; }
 
 typedef struct { int active, note, gate; uint32_t inc, ph, ph2; int64_t age; v_adsr env; int32_t lp; } v_voice;
 static v_voice vs[NV];
@@ -251,11 +260,12 @@ static const op1_engine_t *eng;
 
 static void note_event(const event *e)
 {
+    if (e->kind == 2) { env_a = e->env[0]; env_d = e->env[1]; env_s = e->env[2]; env_r = e->env[3]; return; }
     if (e->kind) {
         int v = alloc_voice(e->note);
         void *self = host_voice_mem + v * OP1_VOICE_SIZE;
         vs[v] = (v_voice){ .active = 1, .note = e->note, .gate = 1, .inc = note_inc(e->note), .age = ++age_counter };
-        vs[v].env.stage = 1;
+        adsr_start(&vs[v].env);
         host_voice_vel[v] = (int16_t)((e->vel < 1 ? 1 : e->vel > 127 ? 127 : e->vel) << 8);
         for (int i = 0; i < 128; i++) host_pitch_inc[i] = (int32_t)vs[v].inc;
         eng->note_on(self, params);
@@ -296,11 +306,12 @@ static long src_len, src_pos;
 
 static void note_event(const event *e)
 {
+    if (e->kind == 2) { env_a = e->env[0]; env_d = e->env[1]; env_s = e->env[2]; env_r = e->env[3]; return; }
     if (e->kind) {
         int v = alloc_voice(e->note);
         vs[v] = (v_voice){ .active = 1, .note = e->note, .gate = 1, .inc = note_inc(e->note), .age = ++age_counter,
                            .ph2 = 0x40000000u };
-        vs[v].env.stage = 1;
+        adsr_start(&vs[v].env);
     } else {
         for (int v = 0; v < NV; v++) if (vs[v].active && vs[v].gate && vs[v].note == e->note) {
             vs[v].gate = 0;
@@ -440,6 +451,7 @@ int main(int argc, char **argv)
             audio_pos += BLOCK;
         }
         const int dt = (int)((tick + 1) * 1000 / 60 - tick * 1000 / 60);      /* 16 / 17 ms */
+        host_cycles = (uint32_t)((tick + 1) * 400000000LL / 60);              /* BF524 core clock */
         host_frame_begin();
         if (scr && scr->update) scr->update(screen_obj, dt);
         else host_screen_draw(0, dt);

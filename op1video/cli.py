@@ -223,9 +223,9 @@ def parser() -> argparse.ArgumentParser:
     s.set_defaults(fn=cmd_build)
 
     def render_opts(s):
-        s.add_argument("--layout", default="card", choices=["card", "screen", "square"])
+        s.add_argument("--layout", default="card", choices=["card", "screen", "square", "vertical"])
         s.add_argument("--format", default="mp4", choices=["mp4", "webm", "mov", "gif", "png"])
-        s.add_argument("--size", type=_size, help="output size WxH (card 1920x1080, square 1080x1080 by default)")
+        s.add_argument("--size", type=_size, help="output size WxH (card 1920x1080, square 1080x1080, vertical 1080x1920 by default)")
         s.add_argument("--scale", type=int, default=4, help="screen layout: pixels per OLED pixel (default 4)")
         s.add_argument("--fps", type=int, help="frames per second, a divisor of 60 (default: scene, 30)")
         s.add_argument("--duration", type=float, help="override the scene's length in seconds")

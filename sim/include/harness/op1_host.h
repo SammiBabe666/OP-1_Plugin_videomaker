@@ -28,6 +28,7 @@ extern int16_t  host_fx_meter[3];           /* FX output meter per position (pea
 extern void    *host_fx_scratch[3];         /* 176460-byte scratch buffer per FX position */
 extern int      host_fx_pos;                /* FX position the FX screen shows (0 synth, 1 drum, 2 master) */
 extern uint8_t  host_shift;                 /* shift key held */
+extern uint32_t host_cycles;                /* the 400 MHz core cycle counter (CYCLES), advanced by the driver */
 
 #define OP1_PITCH_INC    ((const int32_t *)host_pitch_inc)
 #define OP1_VOICE_ENV    ((const int16_t *)host_voice_env)
