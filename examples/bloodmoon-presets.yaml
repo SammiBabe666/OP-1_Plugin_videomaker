@@ -1,0 +1,39 @@
+# BLOODMOON (by Nola Drift): a dark organ with a haunted bell, under a blood-red moon.
+# Not in the workshop bundle: point --plugin-dir at its source and put its presets in bloodmoon-presets/ next to
+# this scene (both are in https://github.com/SammiBabe666/Project_Bloodmoon):
+#
+#   git clone https://github.com/SammiBabe666/Project_Bloodmoon ~/dev/bloodmoon
+#   cp -r ~/dev/bloodmoon/presets/bloodmoon examples/bloodmoon-presets
+#   ./op1video.py --plugin-dir ~/dev/bloodmoon/src/plugins/bloodmoon render bloodmoon \
+#       --scene examples/bloodmoon-presets.yaml
+#
+plugin: bloodmoon
+title: BLOODMOON
+subtitle: a dark organ with a haunted bell
+duration: 26
+fps: 30
+labels: [Blood, Eclipse, Haunting, Moonrise]
+master: 50
+
+presets:
+  - {at: 0.0,  file: bloodmoon-presets/cathedral.aif,    text: "the default organ and bell"}
+  - {at: 6.5,  file: bloodmoon-presets/funeral_bell.aif, text: "loud, long bell", glide: 0.8}
+  - {at: 13.0, file: bloodmoon-presets/witch_choir.aif,  text: "heavy slow vibrato", glide: 0.8}
+  - {at: 19.5, file: bloodmoon-presets/moon_tremor.aif,  text: "fast, deep warble", glide: 0.8}
+
+notes:
+  - {at: 0.2,  len: 2.8, chord: [D3, F3, A3], vel: 100}
+  - {at: 3.2,  len: 2.8, chord: [A#2, D3, F3], vel: 100}
+  - {at: 6.7,  len: 1.4, note: D4, vel: 120}
+  - {at: 8.3,  len: 1.4, note: A3, vel: 120}
+  - {at: 9.9,  len: 2.6, chord: [D3, F3], vel: 120}
+  - {at: 13.2, len: 3.0, chord: [C3, D#3, G3], vel: 100}
+  - {at: 16.3, len: 3.0, chord: [G#2, C3, D#3], vel: 100}
+  - {at: 19.7, every: 0.4, len: 0.36, notes: "D3 F3 A3 C4 A3 F3 D3 - A#2+D3+F3 - - -", until: 24.5, vel: 105}
+
+moves:
+  # one encoder per preset, so each part of the picture moves on its own
+  - {at: 1.5,  to: 5.5,  knob: orange, value: 75}   # MOONRISE: the moon rises behind the cathedral
+  - {at: 9.0,  to: 12.0, knob: blue,   value: 90}   # BLOOD: the rose window turns
+  - {at: 15.0, to: 18.5, knob: green,  value: 95}   # ECLIPSE: the tower bells swing
+  - {at: 21.0, to: 24.0, knob: white,  value: 30}   # HAUNTING: the stars calm down

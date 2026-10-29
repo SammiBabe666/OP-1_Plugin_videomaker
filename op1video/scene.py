@@ -383,7 +383,8 @@ def _load_presets(sc: Scene, spec: list, plugin: Plugin) -> list:
             pr = presets_mod.load((sc.base_dir / str(e["file"])).expanduser())
         except presets_mod.PresetError as err:
             raise SceneError(str(err))
-        if pr.type and pr.type != plugin.display:
+        # the firmware builder saves a plugin's sounds under its name with "_" as " " (hollow_saint -> "hollow saint")
+        if pr.type and pr.type.replace("_", " ") != plugin.display.replace("_", " "):
             raise SceneError(f"{pr.path.name} is a preset for {pr.type!r}, not {plugin.display!r}")
         entries.append((float(e.get("at", 0)), e, pr))
     entries.sort(key=lambda x: x[0])

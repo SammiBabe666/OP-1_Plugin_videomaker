@@ -6,3 +6,7 @@ __pycache__/
 venv/
 *.egg-info/
 .DS_Store
+
+# preset files copied in from the plugins' own repositories for the example scenes
+examples/bloodmoon-presets/
+examples/hollow_saint-presets/
