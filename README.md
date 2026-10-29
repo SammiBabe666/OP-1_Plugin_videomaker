@@ -14,6 +14,25 @@ the plugin's own SVG artwork with those changes, and muxes the frames with the s
 ./op1video.py render-all          # every plugin, using the demo scenes in scenes/
 ```
 
+## See it in action
+
+Two plugins from outside the workshop bundle, rendered from their own source with `--plugin-dir`, stepping
+through their presets: [BLOODMOON](https://github.com/SammiBabe666/Project_Bloodmoon) by Nola Drift, a dark organ
+with a haunted bell, and [Cathedral of the Hollow Saint](https://github.com/SammiBabe666/Project_Hollow_Saint), a
+haunted hurdy-gurdy.
+
+**▶ [Watch the demo video with sound](docs/media/demo.mp4)** (52 s, 1080p, both plugins)
+
+| BLOODMOON | Hollow Saint |
+|---|---|
+| ![BLOODMOON on the card layout: the moon behind the cathedral, the four knobs in blackletter, the witch choir preset](docs/media/bloodmoon.png) | ![Hollow Saint on the card layout: the hurdy-gurdy in the cathedral, the Lo-Fi Relic cassette on, the midnight vigil preset](docs/media/hollow_saint.png) |
+| ![BLOODMOON screen animation: the moon rises, the rose window turns, the bells swing](docs/media/bloodmoon.gif) | ![Hollow Saint screen animation: the wheel turns, the strings play, the relic cassette appears](docs/media/hollow_saint.gif) |
+
+The scenes are [examples/bloodmoon-presets.yaml](examples/bloodmoon-presets.yaml) and
+[examples/hollow_saint-presets.yaml](examples/hollow_saint-presets.yaml); each one says how to render it.
+
+## Supported plugins
+
 28 plugins are supported: every synth, effect and live-input engine in the bundle that has a screen —
 aether, amp, arc, clouds, crush, elg, eva, father, fmbell, granular, hail, in a room, mbira, mixtur, oxbow,
 palme, pew, plate, reverb, sid, snowglobe, stutter, supersaw, taffy, tape, warble, washer and wavetable.

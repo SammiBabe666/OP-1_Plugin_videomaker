@@ -14,6 +14,8 @@ Annotated scenes that show every scene feature. Render one with:
 | `amp-tuner.yaml` | a live-input engine with the T2 tuner page (`tuner: true`) |
 | `granular-your-sample.yaml` | Granular playing your own sample (`sample: ...`) |
 | `vapora-presets.yaml` | a plugin that isn't in the workshop bundle (`--plugin-dir`), stepping through its preset files with captions, for the vertical layout |
+| `bloodmoon-presets.yaml` | BLOODMOON (`--plugin-dir`), four presets with one encoder moved in each to show what it does on screen |
+| `hollow_saint-presets.yaml` | Cathedral of the Hollow Saint (`--plugin-dir`), four presets and a green push to the Lo-Fi Relic page |
 
 The two scenes that read audio files expect `examples/audio/loop.wav`; `make example-audio` writes a test loop
 there with ffmpeg, or drop in any file of your own.
